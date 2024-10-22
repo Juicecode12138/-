@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>火灾预警数据统计平台</title>
+    <link rel="stylesheet" href="css/index.css" type="text/css"/>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&type=webgl&ak=wTl8aqiR7w8KPBzr24dGvmH4Y9MO1BSW">
+    </script>
+    <style type="text/css">
+        .BMap_cpyCtrl { /*去除百度文字*/
+            display:none;
+        }
+        .anchorBL{      /*去除百度logo*/
+            display:none;
+        }
+        .button1{
+            height: 25px;
+            weight: 30px;
+        }
+        .button1:hover{
+            color: #0b7ec4;
+        }
+    </style>
+    <script src="js/jquery.js" type="text/javascript"></script>
+<script>
+    function a1() {
+       var date= document.getElementById("mydate").value
+        date=date.toString()
+        var da=''
+        da+='index.html?param='+date
+        window.location.href=da
+    }
+
+    function exec1(command) {
+        var ws = new ActiveXObject("WScript.Shell");
+        ws.run(command);           //exec 和 run
+        ws = null;
+    }
+
+</script>
+<script src="js/getUrl.js"></script>
+</head>
+<body>
+    <header>
+        <h1>火灾预警数据统计平台&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="date" value="" placeholder="日期" id="mydate">
+             <input type=button value=查询 onclick="a1()"></h1>
+
+        <div class="denlu"><a href="../houtai/login.html">系统后台登录</a>
+            <a href="echarts/demo5.html" target="_blank">数据分析报表</a>
+            <button class='button1' onclick="exec1('python  D:/AppServ/www/fire--web/yolov5-fire-master/window.py')">监测系统</button>
+        </div>
+
+        <div class="showTime"></div>
+        <script>
+            var t = null;
+            t = setTimeout(time, 1000);//開始运行
+            function time() {
+                clearTimeout(t);//清除定时器
+                dt = new Date();
+                var y = dt.getFullYear();
+                var mt = dt.getMonth() + 1;
+                var day = dt.getDate();
+                var h = dt.getHours();//获取时
+                var m = dt.getMinutes();//获取分
+                var s = dt.getSeconds();//获取秒
+                document.querySelector(".showTime").innerHTML = '当前时间：' + y + "年" + mt + "月" + day + "-" + h + "时" + m + "分" + s + "秒";
+                t = setTimeout(time, 1000); //设定定时器，循环运行
+            }
+ </script>
+    </header>
+    <section class="mainbox">
+        <div class="colum">
+            <div class="panel bar">
+                <h2>疑似火情数量（数量/百起）（数量/百起）</h2>
+                <div class="chart"></div>
+            <div class="panel-footer"></div>
+            </div>
+            <div class="panel line">
+                <h2>未处理数据数量(数量/十起)</h2>
+                <div class="chart">图表</div>
+            <div class="panel-footer"></div>
+            </div>
+            <div class="panel pie">
+                <h2>每个季度火情总量</h2>
+                <div class="chart">图表</div>
+            <div class="panel-footer"></div>
+             </div>
+        </div>
+
+        <div class="colum">
+            <div class="no">
+                <div class="no-hd">
+                    <ul>
+                        <li id="h1">1823</li>
+                        <li id="h2">136</li>
+                    </ul>
+                </div>
+                <div class="no-bd">
+                    <ul>
+                        <li>当日火情预警数量</li>
+                        <li>当日未处理数据数量</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="map">
+                <div id="main1" class="chart" style="color: #00FF00"></div>
+                <script type="text/javascript">
+                    var map = new BMapGL.Map("main1");
+                    // 创建地图实例
+                    var point = new BMapGL.Point(104.114129, 37.550339);
+                    // 创建点坐标
+                    map.setMinZoom(4);  //最小级别
+                    map.setMaxZoom(6); //最大级别
+                    map.centerAndZoom(point, 5);
+                    // 初始化地图，设置中心点坐标和地图级别
+                    map.enableScrollWheelZoom(true);
+                    //开启鼠标滚轮缩放
+                    map.setMapStyleV2({
+                        styleId: 'dc2a5bc5d3b39158c6eb7be7e0883a32'
+                    });
+
+                    var zoomCtrl = new BMapGL.ZoomControl();  // 添加缩放控件
+                    map.addControl(zoomCtrl);
+                    var cityCtrl = new BMapGL.CityListControl();  // 添加城市列表控件
+                    map.addControl(cityCtrl);
+
+
+
+                    var bd1 = new BMapGL.Boundary();
+                    var d
+                    $.ajax({
+                        type : "post",
+                        async : false, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+                        url :  "../getChineneAreaComSum", //请求发送到Controller处，路径我上面写好了的，直接拼的，你自己按照你的写
+                        data : {},
+                        dataType : "json", //返回数据形式为json
+                        success : function(result) {
+                            d=result
+                          //  console.log(d)
+                        },
+
+                    })
+                    var date=$.getUrlParam("param")
+                    // 北京
+                    bd1.get('北京市', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(116.404, 39.925);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+                                title : "北京使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.beijing+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':window.open('map-web/beijing.html?param='+date)
+                                            alert('北京市');
+
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            // e.target.setTopFillOpacity(1);
+
+                                            map.openInfoWindow(infoWindow1, point1);
+
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 天津
+                    bd1.get('天津市', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(117.2, 39.12);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "天津使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.tianjin+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/tianjin.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 上海
+                    bd1.get('上海市', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(121.47, 31.23);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "上海使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.shanghai+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/shanghai.html?param='+date)
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 重庆
+                    bd1.get('重庆市', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(106.55,29.57);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "重庆使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.chongqing+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/chongqing.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 河北
+                    bd1.get('河北省', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(114.52, 38.05);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "河北使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.heibei+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/hebei.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 河南
+                    bd1.get('河南省', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(113.62, 34.75);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "河南使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.henan+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/henan.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 云南
+                    bd1.get('云南省', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(102.72, 25.05);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "云南使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.yunnan+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/yunnan.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 辽宁
+                    bd1.get('辽宁省', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(123.43 ,41.8);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "辽宁使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.liaoning+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/liaoning.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 黑龙江
+                    bd1.get('黑龙江', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(126.53, 45.8);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "黑龙江使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.heilongjiang+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/heilongjiang.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 湖南
+                    bd1.get('湖南', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(112.93, 28.23);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "湖南使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.hunan+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/hunan.html?param='+date)
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 安徽
+                    bd1.get('安徽', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(117.25, 31.83);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "安徽使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.anhui+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/anhui.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 山东
+                    bd1.get('山东', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(116.98,36.67);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "山东使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.shandong+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/shandong.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 新疆
+                    bd1.get('新疆', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(87.62, 43.82);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "新疆使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.xinjiang+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/xinjiang.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 江苏
+                    bd1.get('江苏', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(118.78, 32.07);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "江苏使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.jiangsu+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/jiangsu.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 浙江
+                    bd1.get('浙江', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(120.15, 30.28);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "浙江使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.zhejiang+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/zhejiang.html?param='+date)
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 江西
+                    bd1.get('江西', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(115.85,28.68);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "江西使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.jiangxi+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/jinagxi.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 湖北
+                    bd1.get('湖北', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(114.3, 30.6);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "湖北使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.hubei+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/hubei.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 广西
+                    bd1.get('广西', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point( 108.37, 22.82);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "广西使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.guangxi+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/guangxi.html?param='+date)
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 甘肃
+                    bd1.get('甘肃', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(103.82 ,36.07);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "甘肃使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.gansu+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/gansu.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 山西
+                    bd1.get('山西', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(112.55,37.87);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "山西使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.shanxi+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/shanxi.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 内蒙古
+                    bd1.get('内蒙古', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(111.73, 40.83);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "内蒙古使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.neimenggu+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/neimenggu.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 陕西
+                    bd1.get('陕西', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(108.93, 34.27);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "陕西使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.shanxi1+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/shanxi1.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 吉林
+                    bd1.get('吉林省', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(125.32,43.9);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "吉林使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.jilin+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/jilin.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 福建
+                    bd1.get('福建', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point( 119.3,26.08);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "福建使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.fujian+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/fujian.html?param='+date)
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 贵州
+                    bd1.get('贵州', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(106.63 ,26.65);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "贵州使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.guizhou+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/guizhou.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 广东
+                    bd1.get('广东', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(113.27,23.13);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "广东使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.guangdong+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/guangdong.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 青海
+                    bd1.get('青海', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(101.78, 36.62);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "青海使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.qinghai+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/qinghai.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 西藏
+                    bd1.get('西藏', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(91.13, 29.65);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "西藏使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.xizang+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/xizang.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 四川
+                    bd1.get('四川', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(104.07 ,30.67);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "四川使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.sichuan+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/sichuan.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 宁夏
+                    bd1.get('宁夏', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(106.28 ,38.47);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "宁夏使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.ningxia+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/ningxia.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 海南
+                    bd1.get('海南', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(110.32, 20.03);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "海南使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.hainan+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/hainan.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    // 台湾
+                    bd1.get('台湾', function (rs) {
+                        let count = rs.boundaries.length;
+                        for (let i = 0; i < count; i++) {
+                            let path = [];
+                            let str = rs.boundaries[i].replace(' ', '');
+                            let points = str.split(';');
+                            for (let j = 0; j < points.length; j++) {
+                                let lng = points[j].split(',')[0];
+                                let lat = points[j].split(',')[1];
+                                path.push(new BMapGL.Point(lng, lat));
+                            }
+                            let Polygon = new BMapGL.Polygon(path,  {
+                                strokeColor:"blue",
+                                strokeWeight:2,
+                                strokeOpacity:0.5,
+                                fillColor:('#5679ea'),
+
+                            });
+                            map.addOverlay(Polygon);
+
+                            var point1 = new BMapGL.Point(121.565,25.0378);
+                            var opts = {
+                                width : 200,     // 信息窗口宽度
+                                height: 100,     // 信息窗口高度
+
+                                title : "台湾使用系统公司数量" , // 信息窗口标题
+                                message:"相关数据"
+                            }
+                            var infoWindow1 = new BMapGL.InfoWindow(d.taiwan+"个公司", opts);  // 创建信息窗口对象
+
+
+
+                            // 绑定鼠标事件
+                            var events = ['click', 'mouseover', 'mouseout'];
+                            for (let i = 0; i < events.length; i++) {
+                                Polygon.addEventListener(events[i], e => {
+                                    switch (events[i]) {
+                                        case 'click':
+                                            window.open('map-web/taiwan.html')
+                                            break;
+                                        case 'mouseover':
+                                            e.target.setFillColor('#475fab');
+                                            map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                            break;
+                                        case 'mouseout':
+                                            e.target.setFillColor('#5679ea');
+                                            //map.removeOverlay(infoWindow1,point1);
+                                            break;
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+
+
+
+
+                </script>
+
+                <div class="map1" style="color: #00FF00"></div>
+               <div class="map2" style="color: #00FF00"></div>
+                <div class="map3" style="color: #00FF00"></div>
+            </div>
+        </div>
+
+        <div class="colum">
+            <div class="panel bar1">
+                <h2>火情发生位置数据分析(数量/万起)</h2>
+                <div class="chart">图表</div>
+            <div class="panel-footer"></div>
+            </div>
+            <div class="panel line1">
+                <h2>当日火情高发位置火情情况统计(数量/百起)</h2>
+                <div class="chart">图表</div>
+            <div class="panel-footer"></div>
+            </div>
+            <div class="panel pie1">
+                <h2>全国总火情发生情况趋势</h2>
+
+                <div class="chart">
+
+<!--                    <h4 style="color: #0b7ec4">w000标准:476132100</h4><br>
+                    <h4 style="color: #0b7ec4">w001标准:97.9</h4><br>
+                    <h4 style="color: #0b7ec4">w018标准:6511.03</h4><br>
+                    <h4 style="color: #0b7ec4">w201标准:2097.3</h4><br>
+                    <h4 style="color: #0b7ec4">w203标准:30424.95</h4><br>
+                    <h4 style="color: #0b7ec4">w211标准:27777.643</h4>-->
+                </div>
+            <div class="panel-footer"></div>
+            </div>
+        </div>
+    </section>
+    <script src="js/echarts.js"></script>
+    <script src="js/flexible.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/index.js"></script>
+
+<!--    <script src="js/china.js"></script>-->
+<!--    <script src="js/myMap.js"></script>-->
+    <script src="js/getUrl.js"></script>
+    <script>
+        var mydate=$.getUrlParam("param")
+        console.log(mydate)
+        $.ajax({
+            type : "post",
+            async : false, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            url :  "../woaini5", //请求发送到Controller处，路径我上面写好了的，直接拼的，你自己按照你的写
+            data : {date:mydate},
+            dataType : "json", //返回数据形式为json
+            success : function(result) {
+                // console.log(result)
+                var h1=result.errcompany;
+                var h2=result.sumcompany;
+                $("#h1").html(h1);
+                $("#h2").html(h2)
+            },
+
+        })
+    </script>
+
+</body>
+</html>

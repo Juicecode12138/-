@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>未处理数据情况</title>
+  <link rel="stylesheet" href="../css/demo2.css" type="text/css"/>
+
+  <style>
+    table,tbody {
+      display: block;
+      height: 95%;
+      border: 0;
+      border-spacing: 0;
+      border-collapse: collapse;
+      cursor: default;
+      border-color: pink;
+    }
+    tbody {
+      overflow-y: scroll;
+    }
+    table thead,
+    tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+    table thead {
+      width: calc(100% - 1em)
+    }
+    table thead th {
+      background: #84acde;
+      width: 20%;
+    }
+
+    table tbody td {
+      width: 20%;
+      text-align: center;
+      font-size: 15px;
+    }
+  </style>
+
+</head>
+<body>
+<header>
+  <h1>未处理数据情况</h1>
+</header>
+<section class="mainbox">
+  <div class="colum">
+    <div class="panel bar">
+      <h2></h2>
+      <div class="chart">
+        <table  border="1">
+          <thead>
+          <tr>
+            <th>未处理数据总量</th>
+            <th>预警数据总量</th>
+
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>192</td>
+            <td>1729</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel-footer"></div>
+    </div>
+  </div>
+
+</section>
+<script src="../js/echarts.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/jquery.js"></script>
+<!--
+<script src="../js/demo3-1.js"></script>
+-->
+</body>
+</html>

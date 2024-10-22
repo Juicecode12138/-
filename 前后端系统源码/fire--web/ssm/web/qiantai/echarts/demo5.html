@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>下载</title>
+  <link rel="stylesheet" href="../css/demo3.css" type="text/css"/>
+  <script type="text/javascript">
+        //全局事件
+      function myFunction(){
+          document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-1.html" width="100%" height="100%"></object>';
+      }
+
+
+    function load_home() {
+        var a=Number(document.getElementById("show2").value);
+         // alert(a);
+        // document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./demo4-1.html" width="100%" height="100%"></object>';
+        switch (a){
+            case 1:
+                document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-1.html" width="100%" height="100%"></object>';
+                //alert(1);
+                break;
+            case 2:
+                document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-2.html" width="100%" height="100%"></object>';
+                // alert(2);
+                break;
+            case 3:
+              document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-3.html" width="100%" height="100%"></object>';
+              break;
+            case 4:
+              document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-4.html" width="100%" height="100%"></object>';
+              break;
+            case 5:
+              document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-5.html" width="100%" height="100%"></object>';
+
+              break;
+          case 6:
+            document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-6.html" width="100%" height="100%"></object>';
+
+            break;
+          case 7:
+            document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-7.html" width="100%" height="100%"></object>';
+
+            break;
+          case 8:
+            document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-8.html" width="100%" height="100%"></object>';
+
+            break;
+          case 9:
+            document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-9.html" width="100%" height="100%"></object>';
+
+            break;
+          case 10:
+            document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-10.html" width="100%" height="100%"></object>';
+
+            break;
+          case 11:
+            document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-11.html" width="100%" height="100%"></object>';
+
+            break;
+          case 12:
+            document.getElementById("viewDiv").innerHTML = '<object type="text/html" data="./world1-12.html" width="100%" height="100%"></object>';
+
+            break;
+        }
+
+    }
+
+
+    function getSelectedValue(show2){
+      var obj=document.getElementById(show2);
+      return obj.value;      //如此简单，直接用其对象的value属性便可获取到
+    }
+
+  </script>
+  <style>
+    body{
+      color: #00BFFF;
+    }
+  li{
+    text-align: center;
+    line-height: 0.95rem;
+    color: 	#00BFFF;
+  }
+  .div00{
+    width: 100%;
+    height: 5%;
+    /*background-color: pink;*/
+  }
+  .div01{
+    float: left;
+    width: 35%;
+    height: 100%;
+    /*background-color: #00BFFF;*/
+  }
+  .div02{
+    float: left;
+    width: 25%;
+    height: 100%;
+    /*background-color: aqua;*/
+  }
+  .div03{float: left;
+    width: 35%;
+    height: 100%;
+    /*background-color: #02a6b5;*/
+  }
+
+  table,tbody {
+    display: block;
+    height: 95%;
+    border: 0;
+    border-spacing: 0;
+    border-collapse: collapse;
+    cursor: default;
+    border-color: pink;
+  }
+  tbody {
+    overflow-y: scroll;
+  }
+  table thead,
+  tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  table thead {
+    width: calc(100% - 1em)
+  }
+  table thead th {
+    background: #84acde;
+    width: 20%;
+  }
+
+  table tbody td {
+    width: 20%;
+    text-align: center;
+    font-size: 15px;
+  }
+ input{
+   margin-left: 10%;
+   margin-top: 4%;
+ }
+ select{
+   margin-top: 4%;
+ }
+</style>
+</head>
+<body onload="myFunction()">
+<header>
+  <h1>相关数据下载</h1>
+</header>
+<section class="mainbox">
+  <div class="colum">
+    <div class="panel bar">
+<div class="div00">
+  <div class="div01">
+
+      <input placeholder="   搜索数据" id="l2">
+     <button onclick="a1()" >查询</button>
+
+  </div>
+  <div class="div02"><h2>excel12个月相关数据</h2></div>
+  <div class="div03">
+    下载：
+    <select onchange="javascript:location.href=this.value">
+      <option value="../excel/1.xls">1月</option>
+      <option value="../excel/2.xls" >2月</option>
+      <option value="../excel/3.xls">3月</option>
+      <option  value="../excel/4.xls">4月</option>
+      <option value="../excel/5.xls">5月</option>
+      <option value="../excel/6.xls">6月</option>
+      <option value="../excel/7.xls">7月</option>
+      <option value="../excel/8.xls">8月</option>
+      <option value="../excel/9.xls">9月</option>
+      <option value="../excel/10.xls">10月</option>
+      <option value="../excel/11.xls">11月</option>
+      <option value="../excel/12.xls">12月</option>
+    </select>
+
+    显示：
+    <select id="l1">
+      <option >1月</option>
+      <option >2月</option>
+      <option>3月</option>
+      <option>4月</option>
+      <option>5月</option>
+      <option>6月</option>
+      <option>7月</option>
+      <option>8月</option>
+      <option>9月</option>
+      <option>10月</option>
+      <option>11月</option>
+      <option>12月</option>
+    </select>
+
+    </form>
+  </div>
+
+</div>
+
+
+      <div class="chart">
+
+        <table  border="1">
+          <thead>
+          <tr>
+            <th>序号</th>
+            <th>采集数据</th>
+            <th>处理结果</th>
+            <th>预警程度</th>
+            <th>是否已处理</th>
+            <th>日期时间</th>
+          </tr>
+          <tr>
+            <th>1</th>
+            <th><a href="../image/img1/1_1.jpg">1.jpg</a></th>
+            <th><a href="../image/img1/1_1.jpg">1.jpg</a></th>
+            <th>0.75</th>
+            <th>已处理</th>
+            <th>2023/04/15 21：16</th>
+          </tr>
+          <tr>
+            <th>2</th>
+            <th><a href="../image/img1/1_2.jpg">2.jpg</a></th>
+            <th><a href="../image/img1/1_2.jpg">2.jpg</a></th>
+            <th>0.89</th>
+            <th>已处理</th>
+            <th>2023/04/15 21：35</th>
+          </tr>
+          <tr>
+            <th>3</th>
+            <th><a href="../image/img1/1_3.jpg">3.jpg</a></th>
+            <th><a href="../image/img1/1_3.jpg">3.jpg</a></th>
+            <th>0.78</th>
+            <th>已处理</th>
+            <th>2023/04/15 21：43</th>
+          </tr>
+          <tr>
+            <th>4</th>
+            <th><a href="../image/img1/1_5.jpg">4.jpg</a></th>
+            <th><a href="../image/img1/1_5.jpg">4.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/15 21：55</th>
+          </tr>
+          <tr>
+            <th>5</th>
+            <th><a href="../image/img1/1_50.jpg">5.jpg</a></th>
+            <th><a href="../image/img1/1_50.jpg">5.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/15 22：23</th>
+          </tr>
+          <tr>
+            <th>6</th>
+            <th><a href="../image/img1/1_60.jpg">6.jpg</a></th>
+            <th><a href="../image/img1/1_60.jpg">6.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/15 22：41</th>
+          </tr>
+          <tr>
+            <th>7</th>
+            <th><a href="../image/img1/1_7.jpg">7.jpg</a></th>
+            <th><a href="../image/img1/1_7.jpg">7.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/15 22：58</th>
+          </tr>
+          <tr>
+            <th>8</th>
+            <th><a href="../image/img1/1_8.jpg">8.jpg</a></th>
+            <th><a href="../image/img1/1_8.jpg">8.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/15 23：07</th>
+          </tr>
+          <tr>
+            <th>9</th>
+            <th><a href="../image/img1/1_90.jpg">9.jpg</a></th>
+            <th><a href="../image/img1/1_90.jpg">9.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/15 23：16</th>
+          </tr>
+          <tr>
+            <th>10</th>
+            <th><a href="../image/img1/1_10.jpg">10.jpg</a></th>
+            <th><a href="../image/img1/1_10.jpg">10.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/15 23：35</th>
+          </tr>
+          <tr>
+            <th>11</th>
+            <th><a href="../image/img1/1_11.jpg">11.jpg</a></th>
+            <th><a href="../image/img1/1_11.jpg">11.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/15 23：49</th>
+          </tr>
+          <tr>
+            <th>12</th>
+            <th><a href="../image/img1/1_12.jpg">12.jpg</a></th>
+            <th><a href="../image/img1/1_12.jpg">12.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/15 23：59</th>
+          </tr>
+          <tr>
+            <th>13</th>
+            <th><a href="../image/img1/1_13.jpg">13.jpg</a></th>
+            <th><a href="../image/img1/1_13.jpg">13.jpg</a></th>
+            <th>0.73</th>
+            <th>已处理</th>
+            <th>2023/04/16 00：35</th>
+          </tr>
+          </thead>
+
+        </table>
+
+      </div>
+      <div class="panel-footer"></div>
+    </div>
+  </div>
+
+
+  <div class="colum">
+    <div class="panel bar1">
+      <div class="div00">
+        <div class="div01">
+<!--          <form target="_blank">-->
+<!--            <input placeholder="   搜索名">-->
+<!--          </form>-->
+        </div>
+        <div class="div02"><h2>world12个月相关数据</h2></div>
+        <div class="div03">
+          下载：
+          <select onchange="javascript:location.href=this.value">
+            <option  value="../word/12.docx">1月</option>
+            <option value="../word/12.docx" >2月</option>
+            <option value="../word/12.docx">3月</option>
+            <option value="../word/12.docx">4月</option>
+            <option value="../word/12.docx">5月</option>
+            <option value="../word/12.docx">6月</option>
+            <option value="../word/12.docx">7月</option>
+            <option value="../word/12.docx">8月</option>
+            <option value="../word/12.docx">9月</option>
+            <option value="../word/12.docx">10月</option>
+            <option value="../word/12.docx">11月</option>
+            <option value="../word/12.docx">12月</option>
+          </select>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          显示：
+          <select id="show2" onchange="load_home()">
+            <option value="1">1月</option>
+            <option value="2">2月</option>
+            <option value="3">3月</option>
+            <option value="4">4月</option>
+            <option value="5">5月</option>
+            <option value="6">6月</option>
+            <option value="7">7月</option>
+            <option value="8">8月</option>
+            <option value="9">9月</option>
+            <option value="10">10月</option>
+            <option value="11">11月</option>
+            <option value="12">12月</option>
+          </select>
+
+          </form>
+        </div>
+
+      </div>
+      <div id="viewDiv" class="chart">
+        <button type="button" id="btn" onClick="javascript:load_home();" >确认</button>
+      </div>
+
+<!--      <iframe src="./demo4-1.html" width="100%" height="100%" frameborder="0">
+        您的浏览器不支持iframe，请升级
+      </iframe>-->
+
+      <div class="panel-footer"></div>
+    </div>
+  </div>
+</section>
+<script src="../js/echarts.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/jquery.js"></script>
+<script>
+
+  function a1() {
+    var month=document.getElementById("l1").value
+    var company_id=document.getElementById("l2").value
+    console.log(month)
+    console.log(company_id)
+    $.ajax({
+      type : "post",
+      async : false, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+      url :  "../../woaini24", //请求发送到Controller处，路径我上面写好了的，直接拼的，你自己按照你的写
+      data : {company_id:company_id,month:month},
+      dataType : "json", //返回数据形式为json
+      success : function(result) {
+        str=''
+        for(var i=0;i<result.length;i++)
+        {
+          str+='<tr>'+'<td style="font-size: x-small">'+result[i].company_id+'</td>'
+                  +'<td style="font-size: xx-small">'+result[i].outlet_id+'</td>'
+                  +'<td>'+result[i].pollutant_name+'</td>'
+                  +'<td>'+result[i].record_time+'</td>'
+                  +'<td>'+result[i].pollutant_concentration+'</td>'
+                  +'<td>'+result[i].pollutant_quantity+'</td>'+
+                  '<tr/>'
+        }
+        document.getElementById("xiao").innerHTML=str
+      },
+
+    })
+  }
+</script>
+<!--<script src="../js/demo3-1.js"></script>-->
+</body>
+</html>

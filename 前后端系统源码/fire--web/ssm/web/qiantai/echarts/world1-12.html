@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相关数据</title>
+    <link rel="stylesheet" href="../css/world.css" type="text/css"/>
+
+    <style>
+        .div01{
+            height: 50%;
+            /*background-color: pink;*/
+        }
+        .div02{
+            height: 50%;
+            /*background-color: palegoldenrod;*/
+        }
+        table{
+            text-align: center;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+<!--<header>
+  <h1>相关公司数据传输</h1>
+</header>-->
+<section class="mainbox">
+    <div class="colum">
+        <div class="panel bar">
+            <h2>12月world数据报表</h2>
+            <div>
+                <div align="center">
+                    <img  src="../img/1.png">
+                    <h3 style="color: #00FF00">图1.1-各区域季度火灾预警统计</h3>
+                    <div style="color: red">
+                        由图1.1可以看出该月北京、浙江、天津、四川、湖北等地区火灾预警情况较多，可以对此类地区的易燃物控制加强管理。
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+
+                <div align="center">
+                    <img src="../img/2.png" width="700px">
+                    <h3 style="color: #00FF00">图2.1-月度火灾预警情况</h3>
+                    <img src="../img/3.png" width="700px">
+                    <h3 style="color: #00FF00">图2.2-月度火灾预警情况</h3>
+                    <div style="color: red">
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <div align="center">
+                    <img src="../img/4.png" width="700px">
+                    <h3 style="color: #00FF00">图3.1-火灾严重情况各省占比</h3>
+                    <div style="color: red">
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <div align="center">
+                    <img src="../img/5.png" width="700px">
+                    <h3 style="color: #00FF00">图4.1-公司火灾预警占比</h3>
+                    <div style="color: red">
+                        由图4.1可以看出该月未有企业未传输数据，值得鼓励，企业不能为了利益而做出其他违法行为。
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+            <div class="panel-footer"></div>
+        </div>
+    </div>
+
+</section>
+<script src="../js/echarts.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/jquery.js"></script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main01'));
+
+    var data = [
+
+        {
+            value: 1,
+            name: "污染物01",
+        },
+        {
+            value: 1,
+            name: "污染物02",
+        },
+        {
+            value: 1,
+            name: "污染物03",
+        },
+        {
+            value: 1,
+            name: "污染物04",
+        },
+        {
+            value: 1,
+            name: "污染物05",
+        },
+    ];
+    option = {
+        // backgroundColor: "#fff",
+        title: {
+            text: "当月各污染物浓度",
+            subtext: "2月",
+            x: "center",
+            y: "center",
+            textStyle: {
+                fontWeight: "normal",
+                fontSize: 12,
+                color:"#fff",
+            },
+        },
+        tooltip: {
+            show: true,
+            trigger: "item",
+            formatter: "{b}: {c} ({d}%)",
+        },
+        legend: {
+            textStyle: {
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: 14,
+            },
+            orient: "horizontal",
+            bottom: "0%",
+            data: ["污染物01", "污染物02", "污染物03", "污染物04", "污染物05"],
+        },
+        series: [
+            {
+                type: "pie",
+                selectedMode: "single",
+                radius: ["30%", "58%"],
+                color: ["#86D560", "#AF89D6", "#59ADF3", "#FF999A", "#FFCC67"],
+
+                label: {
+                    normal: {
+                        position: "inner",
+                        formatter: "{d}%",
+
+                        textStyle: {
+                            color: "#fff",
+                            fontWeight: "bold",
+                            fontSize: 14,
+                        },
+                    },
+                },
+                labelLine: {
+                    normal: {
+                        show: false,
+                    },
+                },
+                data: data,
+            },
+            {
+                type: "pie",
+                radius: ["58%", "83%"],
+                itemStyle: {
+                    normal: {
+                        color: "#F2F2F2",
+                    },
+                    emphasis: {
+                        color: "#ADADAD",
+                    },
+                },
+                label: {
+                    normal: {
+                        position: "inner",
+                        formatter: "{c}浓度",
+                        textStyle: {
+                            color: "#777777",
+                            fontWeight: "bold",
+                            fontSize: 14,
+                        },
+                    },
+                },
+                data: data,
+            },
+        ],
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+</body>
+</html>

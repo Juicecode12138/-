@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>辽宁地区当日火情情况</title>
+  <link rel="stylesheet" href="../css/index2.css" type="text/css"/>
+</head>
+<body>
+<header>
+  <h1>辽宁地区当日火情情况</h1>
+</header>
+<section class="mainbox">
+  <div class="colum">
+    <div class="panel bar">
+      <h2>疑似火情数量（数量/百起）</h2>
+      <div class="chart"></div>
+      <div class="panel-footer"></div>
+    </div>
+    <div class="panel line">
+      <h2>辽宁疑似火情数量（数量/百起）</h2>
+      <div class="chart">图表</div>
+      <div class="panel-footer"></div>
+    </div>
+    <div class="panel pie">
+      <h2>每个季度数据火情总量</h2>
+      <div class="chart">图表</div>
+      <div class="panel-footer"></div>
+    </div>
+  </div>
+
+  <div class="colum">
+    <div class="no">
+      <div class="no-hd">
+        <ul>
+          <li id="h1"></li>
+          <li id="h2"></li>
+        </ul>
+      </div>
+      <div class="no-bd">
+        <ul>
+          <li>当日火情预警数量</li>
+          <li>当日未处理数据数量</li>
+        </ul>
+      </div>
+    </div>
+    <div class="map">
+      <div class="chart" style="color: #00FF00"></div>
+
+      <div class="map1" style="color: #00FF00"></div>
+      <div class="map2" style="color: #00FF00"></div>
+      <div class="map3" style="color: #00FF00"></div>
+    </div>
+  </div>
+
+  <div class="colum01">
+    <div class="panel01 bar1">
+      <h2>辽宁省使用本系统公司列表（编号）</h2>
+      <div class="chart01">
+        <ul type="disc">
+          <li><a href="../company-web/campany.html">xx</a></li>
+          <li>xx</li>
+          <li>xx</li>
+          <li>xx</li>
+          <li>xx</li>
+          <li>xx</li>
+        </ul>
+
+
+      </div>
+      <div class="panel-footer01"></div>
+    </div>
+  </div>
+</section>
+<script src="../js/echarts.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/index2.js"></script>
+<script src="../map/js/liaoning.js"></script>
+<script type="text/javascript">
+  // 1. 实例化对象
+  var myChart = echarts.init(document.querySelector(".map .chart"));
+  var options = {
+
+    tooltip: {
+      trigger: 'item',
+    },
+    visualMap: {
+      type: 'piecewise',
+      left: 10,
+      top: 10,
+
+      text: ['数量（个）'],
+
+      showLabel: true,
+      calculable: true,
+      realtime: false,
+      pieces: [{ gt: 50 }, { gt: 30, lte: 50 }, { gt: 10, lte: 30 }, { gt: 5, lte: 10 }, { gte:0,lte: 5 }],
+      inRange: {
+        color: ['#C4EAFF', '#7FC9FF', '#3AA0FF', '#ed4845', '#ec2b24',],
+      },
+    },
+    series: [
+      {
+        name: '火情预警企业数量',
+        type: 'map',
+        map: '辽宁',
+        roam: true,
+        emphasis: {
+          label: {
+            show: true,
+          },
+        },
+        data: [
+          { name: '沈阳市', value: 0 },
+          { name: '大连市', value: 0 },
+          { name: '鞍山市', value: 0 },
+          { name: '抚顺市', value: 0 },
+          { name: '本溪市', value: 0 },
+          { name: '丹东市', value: 0 },
+          { name: '锦州市', value: 0 },
+          { name: '营口市', value: 0 },
+          { name: '辽阳市', value: 0 },
+          { name: '盘锦市', value: 0 },
+          { name: '铁岭市', value: 0 },
+          { name: '朝阳市', value: 0 },
+          { name: '葫芦岛市', value: 0 },
+          { name: '阜新市', value: 0 },
+          { name: '长寿区', value: 0 },
+          { name: '江津区', value: 0 },
+          { name: '合川区', value: 0 },
+          { name: '永川区', value: 0 },
+          { name: '南川区', value: 0 },
+          { name: '璧山区', value: 0 },
+          { name: '铜梁区', value: 0 },
+          { name: '荣昌区', value: 0 },
+          { name: '开州区', value: 0 },
+          { name: '梁平县', value: 0 },
+          { name: '武隆县', value: 0 },
+          { name: '城口县', value: 0 },
+          { name: '丰都县', value: 0 },
+          { name: '垫江县', value: 0 },
+          { name: '忠县', value: 0 },
+          { name: '云阳县', value: 0 },
+          { name: '奉节县', value: 0 },
+          { name: '巫山县', value: 0 },
+          { name: '巫溪县', value: 0 },
+          { name: '石柱土家族自治县', value:0 },
+          { name: '秀山土家族苗族自治县', value: 0 },
+          { name: '酉阳土家族苗族自治县', value: 0 },
+          { name: '彭水苗族土家族自治县', value: 0 },
+          { name: '黔江区', value: 0 },
+        ],
+      },
+    ],
+  };
+
+  myChart.setOption(options);
+  window.addEventListener("resize", function() {
+    myChart.resize();
+  });
+
+</script>
+<script>
+  $.ajax({
+    type : "post",
+    async : false, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+    url :  "../woaini5", //请求发送到Controller处，路径我上面写好了的，直接拼的，你自己按照你的写
+    data : {},
+    dataType : "json", //返回数据形式为json
+    success : function(result) {
+      // console.log(result)
+      var h1=result.errcompany;
+      var h2=result.sumcompany;
+      $("#h1").html(h1);
+      $("#h2").html(h2)
+    },
+
+  })
+</script>
+</body>
+</html>

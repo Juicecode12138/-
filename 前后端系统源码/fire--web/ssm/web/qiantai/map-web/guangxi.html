@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>广西地区当日火情情况</title>
+    <link rel="stylesheet" href="../css/index2.css" type="text/css"/>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&type=webgl&ak=wTl8aqiR7w8KPBzr24dGvmH4Y9MO1BSW">
+    </script>
+    <style type="text/css">
+        .BMap_cpyCtrl { /*去除百度文字*/
+            display:none;
+        }
+        .anchorBL{      /*去除百度logo*/
+            display:none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>广西地区当日火情情况</h1>
+</header>
+<section class="mainbox">
+    <div class="colum">
+        <div class="panel bar">
+            <h2>疑似火情数量（数量/百起）</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel line">
+            <h2>广西疑似火情数量（数量/百起）</h2>
+            <div class="chart">图表</div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel pie">
+            <h2>每个季度数据火情总量</h2>
+            <div class="chart">图表</div>
+            <div class="panel-footer"></div>
+        </div>
+    </div>
+    <p style="display: none" id="area" >广西</p>
+    <div class="colum">
+        <div class="no">
+<!--            <div class="no-hd">-->
+<!--                <ul>-->
+<!--                    <li id="h1"></li>-->
+<!--                    <li id="h2"></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--            <div class="no-bd">-->
+<!--                <ul>-->
+<!--                    <li>当日违规(异常)公司数量</li>-->
+<!--                    <li>当日未违规(无异常)公司数量</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+        </div>
+        <div class="map">
+            <div id="main1" class="chart" style="color: #00FF00"></div>
+            <script type="text/javascript">
+                var map = new BMapGL.Map("main1");
+                // 创建地图实例
+
+                map.setMinZoom(7);  //最小级别
+                map.setMaxZoom(10); //最大级别
+                // 初始化地图，设置中心点坐标和地图级别
+                map.centerAndZoom('南宁市', 7); // 初始化地图,设置中心点坐标和地图级别
+                map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+                map.setMapStyleV2({
+                    styleId: 'dc2a5bc5d3b39158c6eb7be7e0883a32'
+                });
+
+                var zoomCtrl = new BMapGL.ZoomControl();  // 添加缩放控件
+                map.addControl(zoomCtrl);
+                var bd1 = new BMapGL.Boundary();
+
+                // 南宁市
+                bd1.get('南宁市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(108.37 ,22.82);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "疑似火情数量（数量/百起）" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0起", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 柳州市
+                bd1.get('柳州市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(109.42, 24.33);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 桂林市
+                bd1.get('桂林市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(110.28, 25.28);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 梧州市
+                bd1.get('梧州市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(111.27, 23.48);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        // window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 北海市
+                bd1.get('北海市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(109.12, 21.48);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 崇左市
+                bd1.get('崇左市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(107.37, 22.4);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 来宾市
+                bd1.get('来宾市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(109.23, 23.73);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 贺州市
+                bd1.get('贺州市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(111.55, 24.42);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 玉林市
+                bd1.get('玉林市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(110.17, 22.63);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 百色市
+                bd1.get('百色市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(106.62, 23.9);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        // window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 河池市
+                bd1.get('河池市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(108.07, 24.7);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("1个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 钦州市
+                bd1.get('钦州市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(108.62, 21.95);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 防城港市
+                bd1.get('防城港市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(108.35 ,21.7);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        //window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+                // 贵港市
+                bd1.get('贵港市', function (rs) {
+                    let count = rs.boundaries.length;
+                    for (let i = 0; i < count; i++) {
+                        let path = [];
+                        let str = rs.boundaries[i].replace(' ', '');
+                        let points = str.split(';');
+                        for (let j = 0; j < points.length; j++) {
+                            let lng = points[j].split(',')[0];
+                            let lat = points[j].split(',')[1];
+                            path.push(new BMapGL.Point(lng, lat));
+                        }
+                        let Polygon = new BMapGL.Polygon(path,  {
+                            strokeColor:"blue",
+                            strokeWeight:2,
+                            strokeOpacity:0.5,
+                            fillColor:('#5679ea'),
+
+                        });
+                        map.addOverlay(Polygon);
+
+                        var point1 = new BMapGL.Point(109.6 ,23.1);
+                        var opts = {
+                            width : 200,     // 信息窗口宽度
+                            height: 100,     // 信息窗口高度
+
+                            title : "污染企业数量" , // 信息窗口标题
+                            message:"相关数据"
+                        }
+                        var infoWindow1 = new BMapGL.InfoWindow("0个企业", opts);  // 创建信息窗口对象
+
+
+
+                        // 绑定鼠标事件
+                        var events = ['click', 'mouseover', 'mouseout'];
+                        for (let i = 0; i < events.length; i++) {
+                            Polygon.addEventListener(events[i], e => {
+                                switch (events[i]) {
+                                    case 'click':
+                                        // window.open('map-web/fujian.html')
+                                        break;
+                                    case 'mouseover':
+                                        e.target.setFillColor('#475fab');
+                                        map.openInfoWindow(infoWindow1, point1);//打开信息窗口
+                                        break;
+                                    case 'mouseout':
+                                        e.target.setFillColor('#5679ea');
+                                        //map.removeOverlay(infoWindow1,point1);
+                                        break;
+                                }
+                            });
+                        }
+                    }
+                });
+            </script>
+
+                <div class="map1" style="color: #00FF00"></div>
+            <div class="map2" style="color: #00FF00"></div>
+            <div class="map3" style="color: #00FF00"></div>
+        </div>
+    </div>
+
+    <div class="colum01">
+        <div class="panel01 bar1">
+            <h2>广西壮族自治区公司列表(为保护公司隐私用编号代替公司名)</h2>
+            <div class="chart01">
+                <ul type="disc" id="xiaoxiao">
+
+                </ul>
+
+
+            </div>
+            <div class="panel-footer01"></div>
+        </div>
+    </div>
+</section>
+<script src="../js/echarts.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/index2.js"></script>
+<!--<script src="../map/js/guangxi.js"></script>
+<script type="text/javascript">
+    // 1. 实例化对象
+    var myChart = echarts.init(document.querySelector(".map .chart"));
+    var options = {
+
+        tooltip: {
+            trigger: 'item',
+        },
+        visualMap: {
+            type: 'piecewise',
+            left: 10,
+            top: 10,
+
+            text: ['单位（个）'],
+
+            showLabel: true,
+            calculable: true,
+            realtime: false,
+            pieces: [{ gt: 50 }, { gt: 30, lte: 50 }, { gt: 10, lte: 30 }, { gt: 5, lte: 10 }, { gte:0,lte: 5 }],
+            inRange: {
+                color: ['#C4EAFF', '#7FC9FF', '#3AA0FF', '#ed4845', '#ec2b24',],
+            },
+        },
+        series: [
+            {
+                name: '污染企业数量',
+                type: 'map',
+                map: '广西',
+                roam: true,
+                emphasis: {
+                    label: {
+                        show: true,
+                    },
+                },
+                data: [
+                    { name: '南宁市', value: 0 },
+                    { name: '柳州市', value: 0 },
+                    { name: '桂林市', value: 0 },
+                    { name: '梧州市', value: 0 },
+                    { name: '北海市', value: 0 },
+                    { name: '崇左市', value: 0 },
+                    { name: '来宾市', value: 0 },
+                    { name: '贺州市', value: 0 },
+                    { name: '玉林市', value: 0 },
+                    { name: '百色市', value: 0 },
+                    { name: '河池市', value: 0 },
+                    { name: '钦州市', value: 0 },
+                    { name: '防城港市', value: 0 },
+                    { name: '贵港市', value: 0 },
+
+                ],
+            },
+        ],
+    };
+
+    myChart.setOption(options);
+    window.addEventListener("resize", function() {
+        myChart.resize();
+    });
+
+</script>-->
+<script>
+
+    var date=$.getUrlParam('param')
+    $.ajax({
+        type : "post",
+        async : false, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url :  "../../woaini14", //请求发送到Controller处，路径我上面写好了的，直接拼的，你自己按照你的写
+        data : {area:"广西"},
+        dataType : "json", //返回数据形式为json
+        success : function(result) {
+            // console.log(result)
+            console.log(result)
+            var s1=''
+            for(var i=0;i<result.length;i++)
+            {
+                console.log(result[i].userName)
+                s1+='<p>'+'<a href="../company-web/campany.html?param='+result[i].userName+'&param1='+date+'"'+'>'+result[i].userName+'</a>'+'</p>'
+
+            }
+            $("#xiaoxiao").html(s1)
+        },
+
+    })
+</script>
+<script src="../js/getUrl.js"></script>
+</body>
+</html>

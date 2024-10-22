@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>安徽地区当日火情情况</title>
+  <link rel="stylesheet" href="../css/index2.css" type="text/css"/>
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&type=webgl&ak=wTl8aqiR7w8KPBzr24dGvmH4Y9MO1BSW">
+  </script>
+  <style type="text/css">
+    .BMap_cpyCtrl { /*去除百度文字*/
+      display:none;
+    }
+    .anchorBL{      /*去除百度logo*/
+      display:none;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>安徽地区当日火情情况</h1>
+</header>
+<section class="mainbox">
+  <div class="colum">
+    <div class="panel bar">
+      <h2>疑似火情数量（数量/百起）</h2>
+      <div class="chart"></div>
+      <div class="panel-footer"></div>
+    </div>
+    <div class="panel line">
+      <h2>安徽疑似火情数量（数量/百起）</h2>
+      <div class="chart">图表</div>
+      <div class="panel-footer"></div>
+    </div>
+    <div class="panel pie">
+      <h2>每个季度数据火情总量</h2>
+      <div class="chart">图表</div>
+      <div class="panel-footer"></div>
+    </div>
+  </div>
+
+  <div class="colum">
+    <div class="no">
+      <div class="no-hd">
+        <ul>
+          <li id="h1"></li>
+          <li id="h2"></li>
+        </ul>
+      </div>
+      <div class="no-bd">
+        <ul>
+          <li>当日火情预警数量</li>
+          <li>当日未处理数据数量</li>
+        </ul>
+      </div>
+    </div>
+    <div class="map">
+      <div id="main1" class="chart" style="color: #00FF00"></div>
+      <script type="text/javascript">
+        var map = new BMapGL.Map("main1");
+        // 创建地图实例
+
+        map.setMinZoom(7);  //最小级别
+        map.setMaxZoom(12); //最大级别
+        // 初始化地图，设置中心点坐标和地图级别
+        map.centerAndZoom('合肥市', 8); // 初始化地图,设置中心点坐标和地图级别
+        map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+        map.setMapStyleV2({
+          styleId: 'dc2a5bc5d3b39158c6eb7be7e0883a32'
+        });
+
+
+         var zoomCtrl = new BMapGL.ZoomControl();  // 添加缩放控件
+         map.addControl(zoomCtrl);
+        var bd1 = new BMapGL.Boundary();
+          // 合肥市
+        bd1.get('合肥市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 淮南市
+        bd1.get('淮南市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['dblclick', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'dblclick':
+                     alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 马鞍山市
+        bd1.get('马鞍山市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 淮北市
+        bd1.get('淮北市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 铜陵市
+        bd1.get('铜陵市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 安庆市
+        bd1.get('安庆市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 黄山市
+        bd1.get('黄山市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 滁州市
+        bd1.get('滁州市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 阜阳市
+        bd1.get('阜阳市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 宿州市
+        bd1.get('宿州市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 六安市
+        bd1.get('六安市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 亳州市
+        bd1.get('亳州市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 池州市
+        bd1.get('池州市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 宣城市
+        bd1.get('宣城市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 芜湖市
+        bd1.get('芜湖市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+          // 蚌埠市
+        bd1.get('蚌埠市', function (rs) {
+          let count = rs.boundaries.length;
+          for (let i = 0; i < count; i++) {
+            let path = [];
+            let str = rs.boundaries[i].replace(' ', '');
+            let points = str.split(';');
+            for (let j = 0; j < points.length; j++) {
+              let lng = points[j].split(',')[0];
+              let lat = points[j].split(',')[1];
+              path.push(new BMapGL.Point(lng, lat));
+            }
+            let prism = new BMapGL.Prism(path, 0, {   //第二个参数修改高度
+              topFillColor: '#5679ea',
+              topFillOpacity: 0.6,
+              sideFillColor: '#5679ea',
+              sideFillOpacity: 0.9
+            });
+            map.addOverlay(prism);
+
+            // 绑定鼠标事件
+            var events = ['click', 'mouseover', 'mouseout'];
+            for (let i = 0; i < events.length; i++) {
+              prism.addEventListener(events[i], e => {
+                switch (events[i]) {
+                  case 'click':
+                    // alert('北京市');
+                    break;
+                  case 'mouseover':
+                    e.target.setTopFillColor('#475fab');
+                    e.target.setTopFillOpacity(1);
+                    break;
+                  case 'mouseout':
+                    e.target.setTopFillColor('#5679ea');
+                    e.target.setTopFillOpacity(0.5);
+                    break;
+                }
+              });
+            }
+          }
+        });
+
+      </script>
+      <div class="map1" style="color: #00FF00"></div>
+      <div class="map2" style="color: #00FF00"></div>
+      <div class="map3" style="color: #00FF00"></div>
+    </div>
+  </div>
+
+  <div class="colum01">
+    <div class="panel01 bar1">
+      <div style="display: inline"> <h2>安徽省使用本系统公司列表（编号）</h2></div>
+      <div class="chart01">
+        <ul type="disc">
+          <li><a href="https://www.baidu.com/">xx</a></li>
+          <li>xx</li>
+          <li>xx</li>
+          <li>xx</li>
+          <li>xx</li>
+          <li>xx</li>
+        </ul>
+
+
+      </div>
+      <div class="panel-footer01"></div>
+    </div>
+  </div>
+</section>
+<script src="../js/echarts.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/index2.js"></script>
+<!--<script src="../map/js/anhui.js"></script>-->
+<!--<script type="text/javascript">
+  // 1. 实例化对象
+  var myChart = echarts.init(document.querySelector(".map .chart"));
+  var options = {
+
+    tooltip: {
+      trigger: 'item',
+    },
+    visualMap: {
+      type: 'piecewise',
+      left: 10,
+      top: 10,
+
+      text: ['单位（个）'],
+
+      showLabel: true,
+      calculable: true,
+      realtime: false,
+      pieces: [{ gt: 50 }, { gt: 30, lte: 50 }, { gt: 10, lte: 30 }, { gt: 5, lte: 10 }, { gte:0,lte: 5 }],
+      inRange: {
+        color: ['#C4EAFF', '#7FC9FF', '#3AA0FF', '#ed4845', '#ec2b24',],
+      },
+    },
+    series: [
+      {
+        name: '污染企业数量',
+        type: 'map',
+        map: '安徽',
+        roam: true,
+        emphasis: {
+          label: {
+            show: true,
+          },
+        },
+        data: [
+          { name: '合肥市', value: 0 },
+          { name: '淮南市', value: 0 },
+          { name: '马鞍山市', value: 0 },
+          { name: '淮北市', value: 0 },
+          { name: '铜陵市', value: 0 },
+          { name: '安庆市', value: 0 },
+          { name: '黄山市', value: 0 },
+          { name: '滁州市', value: 0 },
+          { name: '阜阳市', value: 0 },
+          { name: '宿州市', value: 0 },
+          { name: '六安市', value: 0 },
+          { name: '亳州市', value: 0 },
+          { name: '池州市', value: 0 },
+          { name: '宣城市', value: 0 },
+          { name: '芜湖市', value: 0 },
+          { name: '蚌埠市', value: 0 },
+
+        ],
+      },
+    ],
+  };
+
+  myChart.setOption(options);
+  window.addEventListener("resize", function() {
+    myChart.resize();
+  });
+
+</script>-->
+<script>
+  $.ajax({
+    type : "post",
+    async : false, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+    url :  "../woaini5", //请求发送到Controller处，路径我上面写好了的，直接拼的，你自己按照你的写
+    data : {},
+    dataType : "json", //返回数据形式为json
+    success : function(result) {
+      // console.log(result)
+      var h1=result.errcompany;
+      var h2=result.sumcompany;
+      $("#h1").html(h1);
+      $("#h2").html(h2)
+    },
+
+  })
+</script>
+</body>
+</html>

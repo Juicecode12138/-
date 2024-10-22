@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公司信息</title>
+  <link rel="stylesheet" href="../css/index3.css" type="text/css"/>
+  <style type="text/css">
+    h1{
+      text-align: center;
+      color: #0b7ec4;}
+
+    table,tbody {
+      display: block;
+      height: 90%;
+      border: 0;
+      border-spacing: 0;
+      border-collapse: collapse;
+      cursor: default;
+      /*border-color: pink;*/
+    }
+    tbody {
+      overflow-y: scroll;
+    }
+    table thead,
+    tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+    table thead {
+      width: calc(100% - 1em)
+    }
+    table thead th {
+      background: #84acde;
+      width: 20%;
+    }
+
+    table tbody td {
+      text-align: center;
+      font-size: 15px;
+    }
+
+
+
+  </style>
+  <script src="../js/jquery.js"></script>
+
+    <script src="../js/getUrl.js" type="text/javascript"></script>
+  <script type="text/javascript">
+
+     $(document).ready(function(){
+       var name = $.getUrlParam('param');
+       // console.log(name)
+       var date= $.getUrlParam('param1')
+       console.log(name)
+       var p= document.getElementById("name");
+       var p1= document.getElementById("phone");
+       var p2=document.getElementById("address");
+       p.innerHTML=name
+       $.ajax({
+         type : "post",
+         async : true, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+         url :  "../../woaini17", //请求发送到Controller处，路径我上面写好了的，直接拼的，你自己按照你的写
+         data : {company_id:name},
+         dataType : "json", //返回数据形式为json
+         success : function(result) {
+           console.log(result)
+          p2.innerHTML=result.address;
+           p1.innerHTML=result.phone;
+         },
+       })
+     });
+  </script>
+
+</head>
+<body>
+<header>
+  <h1>公司详情</h1>
+</header>
+<section class="mainbox">
+  <div class="colum">
+    <div class="panel bar">
+      <h2>火情发生位置数据分析(数量/万起)</h2>
+      <div class="chart"></div>
+      <div class="panel-footer"></div>
+    </div>
+    <p style="display:none;" id="area">安徽</p>
+    <div class="panel line">
+      <h2>当日火情高发位置火情情况统计(数量/百起)</h2>
+      <div class="chart">图表</div>
+      <div class="panel-footer"></div>
+    </div>
+    <div class="panel pie">
+      <h2>每个季度火情总量</h2>
+      <div class="chart">图表</div>
+      <div class="panel-footer"></div>
+    </div>
+  </div>
+
+  <div class="colum">
+
+    <div class="map panel">
+    <div style="text-align: center">
+      <h1>公司信息</h1>
+      <table class="biaodan01" frame="box">
+
+        <tr>
+          <th>邮箱</th>
+          <td>42057****4@qq.com</td>
+        </tr>
+        <tr>
+          <th>代表法人</th>
+          <td>xxx</td>
+        </tr>
+        <tr>
+          <th>注册资本</th>
+          <td>2****0万元人民币</td>
+        </tr>
+        <tr>
+          <th>实缴资本</th>
+          <td>2****0万元人民币</td>
+        </tr>
+        <tr>
+          <th>工商注册号</th>
+          <td>3***********3</td>
+        </tr>
+        <tr>
+          <th>核准日期</th>
+          <td>20**-**-5</td>
+        </tr>
+        <tr>
+          <th>人员规模</th>
+          <td>**人</td>
+        </tr>
+        <tr>
+          <th>成立日期</th>
+          <td>20**-**-07</td>
+        </tr>
+        <tr>
+          <th>企业类型</th>
+          <td>***********公司（自然人投资或控股的法人独资）</td>
+        </tr>
+        <tr>
+          <th>经营状态</th>
+          <td>开业</td>
+        </tr>
+        <tr>
+          <th>经营行业</th>
+          <td>科技推广和*****务业</td>
+        </tr>
+        <tr>
+          <th>登记机关</th>
+          <td>苏*******市场监督管理局</td>
+        </tr>
+        <tr>
+          <th>注册地址</th>
+          <td>****************</td>
+        </tr>
+
+      </table>
+
+
+    </div>
+
+<!--      <div class="chart" style="color: #00FF00"></div>
+      <div class="map1" style="color: #00FF00"></div>
+      <div class="map2" style="color: #00FF00"></div>
+      <div class="map3" style="color: #00FF00"></div>-->
+      <div class="panel-footer"></div>
+    </div>
+  </div>
+
+  <div class="colum">
+    <div class="panel bar1">
+      <h2>公司名称(编号)</h2>
+      <div class="chart">
+            <h1 style="text-align: center;font-size: 20px;line-height: 3rem;" id="name"></h1>
+      </div>
+      <div class="panel-footer"></div>
+    </div>
+    <div class="panel line1">
+      <h2>公司地址联系与方式</h2>
+      <div class="chart">
+        <div>
+        <table>
+        <tr>
+          <th>公司地址:</th>
+          <td style="line-height: 1.5rem;text-align: center" id="address">123</td>
+        </tr>
+          <tr>
+            <th>联系方式:</th>
+            <td tyle="line-height: 1.5rem;" id="phone">123</td>
+          </tr>
+      </table>
+      </div>
+      </div>
+      <div class="panel-footer"></div>
+    </div>
+    <div class="panel pie1">
+      <h2>预警监测数据</h2>
+      <div style="text-align: center" class="chart">
+
+        <table style="width: 100%" border="1">
+          <thead>
+          <tr>
+            <th>图片数据</th>
+            <th>数据阈值</th>
+            <th>是否达到预警</th>
+
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><a href="../image/img1/1_1.jpg">1.jpg</a></td>
+            <td>0.79</td>
+            <td>是</td>
+
+          </tr>
+          <tr>
+            <td><a href="../image/img1/1_2.jpg">2.jpg</a></td>
+            <td>0.33</td>
+            <td>否</td>
+
+          </tr>
+          <tr>
+            <td><a href="../image/img1/1_3.jpg">3.jpg</a></td>
+            <td>4.98</td>
+            <td>是</td>
+
+          </tr>
+          <tr>
+            <td><a href="../image/img1/1_5.jpg">4.jpg</a></td>
+            <td>3.94</td>
+            <td>否</td>
+
+          </tr>
+          <tr>
+            <td><a href="../image/img1/1_50.jpg">5.jpg</a></td>
+            <td>0.44</td>
+            <td>否</td>
+          </tr>
+          <tr>
+            <td><a href="../image/img1/1_60.jpg">6.jpg</a></td>
+            <td>0.96</td>
+            <td>是</td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="panel-footer"></div>
+    </div>
+  </div>
+</section>
+<script src="../js/echarts.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/index3.js"></script>
+<script src="../js/china.js"></script>
+<script src="../js/myMap.js"></script>
+</body>
+</html>
